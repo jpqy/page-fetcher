@@ -22,17 +22,17 @@ const makeRequest = () => {
     }
   
     // Checks for http status code other than 200
-    if (response.statusCode !== 200) {
+    if (response && response.statusCode !== 200) {
       console.log('Error fetching content! Status code: ', response && response.statusCode);
       return;
     }
 
     fs.writeFile(filename, body, (error) => {
       // Handles invalid path
-      if (error.code === 'ENOENT') {
+      if (error && error.code === 'ENOENT') {
         console.log('Invalid path name!');
       } else {
-        console.log(`Downloaded and saved ${body.length} bytes to $${filename}`);
+        console.log(`Downloaded and saved ${body.length} bytes to ${filename}`);
       }
     });
   });
