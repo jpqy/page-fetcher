@@ -1,4 +1,5 @@
 const request = require('request');
+const fs = require('fs');
 
 // parse arguments
 if (process.argv.length !== 4) {
@@ -9,14 +10,12 @@ if (process.argv.length !== 4) {
 const url = process.argv[2];
 const filename = process.argv[3];
 
-const fs = require('fs');
-
-// Make http request and write to file
+// Function to make http request and write to file
 const makeRequest = () => {
   // Make http request to url
   request(url, (error, response, body) => {
 
-    // Print the error if one occurred and quits
+    // Print the error if one occurred, and quit
     if (error) {
       console.log('Error with the request! Error code: ', error.code);
       return;
@@ -42,7 +41,7 @@ const makeRequest = () => {
 // Check to see if the file exists
 fs.access(filename, fs.constants.F_OK, (err) => {
 
-  // If file exists
+  // If file already exists
   if (!err) {
 
     // Set up readline for user input
@@ -52,8 +51,8 @@ fs.access(filename, fs.constants.F_OK, (err) => {
       output: process.stdout
     });
 
-    // Query user to overwrite file
-    rl.question(`${filename} already exists! Press y to replace the file: `, (answer) => {
+    // Query user to overwrite file by typing y
+    rl.question(`${filename} already exists! Respond with \'y\' to replace the file: `, (answer) => {
       if (answer === 'y') {
         console.log('Rewriting the file...');
         makeRequest();
