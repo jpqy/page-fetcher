@@ -1,5 +1,6 @@
 const request = require('request');
 const fs = require('fs');
+const readline = require('readline');
 
 // parse arguments
 if (process.argv.length !== 4) {
@@ -11,7 +12,7 @@ const url = process.argv[2];
 const filename = process.argv[3];
 
 // Function to make http request and write to file
-const makeRequest = () => {
+const makeRequestAndWriteFile = () => {
   // Make http request to url
   request(url, (error, response, body) => {
 
@@ -22,7 +23,7 @@ const makeRequest = () => {
     }
   
     // Checks for http status code other than 200
-    if (response && response.statusCode !== 200) {
+    if (response && (response.statusCode !== 200)) {
       console.log('Error fetching content! Status code: ', response && response.statusCode);
       return;
     }
@@ -45,7 +46,6 @@ fs.access(filename, fs.constants.F_OK, (err) => {
   if (!err) {
 
     // Set up readline for user input
-    const readline = require('readline');
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout
@@ -55,7 +55,7 @@ fs.access(filename, fs.constants.F_OK, (err) => {
     rl.question(`${filename} already exists! Respond with \'y\' to replace the file: `, (answer) => {
       if (answer === 'y') {
         console.log('Rewriting the file...');
-        makeRequest();
+        makeRequestAndWriteFile();
       } else {
         console.log('Exiting...');
       }
@@ -63,6 +63,6 @@ fs.access(filename, fs.constants.F_OK, (err) => {
     });
 
   } else {
-    makeRequest();
+    makeRequestAndWriteFile();
   }
 });
